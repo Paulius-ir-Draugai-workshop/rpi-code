@@ -1,0 +1,39 @@
+{
+  "joystick": {
+    "roll": {
+      "index": 0,
+      "active": 0
+    },
+    "pitch": {
+      "index": 0,
+      "active": 0
+    },
+    "rudder": {
+      "index": 0,
+      "active": 0
+    },
+    "power": {
+      "index": 0,
+      "active": 0
+    }
+  },
+
+  "throttle": {
+    "mini_x": {
+      "index": 0,
+      "active": 0
+    },
+    "mini_y": {
+      "index": 0,
+      "active": 0
+    },
+    "power": {
+      "index": 0,
+      "active": 0
+    },
+    "rudder": {
+      "index": 0,
+      "active": 0
+    }
+  }
+}
