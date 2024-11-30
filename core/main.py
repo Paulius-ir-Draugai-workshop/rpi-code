@@ -74,7 +74,6 @@ while running:
 
     # Print inputs to console periodically (e.g., every 60 frames)
     if len(throttle_inputs) % 60 == 0:
-        # print(" ".join([f"{k}: {v}" for k, v in values.items()]))
         f_axes = format.format_axes(values)
         f_hat = format.format_hat(values["hat"])
         print(f_axes, "hat:", f_hat, sep=" ")
@@ -82,8 +81,6 @@ while running:
         msg = format.format_msg1(f_axes, f_hat)
         print("Msg: ", msg)
         dll_obj = dll.Dll()
-        msg.append(ord("/"))
-        msg.append(ord("E"))
         msg_u = dll_obj.dllPack(msg)
         ser.write(msg_u)
         msg_u = [int(b) for b in msg_u]
