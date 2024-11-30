@@ -1,5 +1,12 @@
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 import numpy as np
+
+# Create figure and two subplots
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+
+# Placeholder data for the current message
+current_msg = bytearray([0b10101010, 0x05, 0xDC, 0x03, 0xE8, 0x02, 0xBC, 0x04, 0x00, 0x01, 0xFF])
 
 def parse_msg(msg):
     # Parse the byte message to extract pitch, roll, yaw, throttle
@@ -14,16 +21,17 @@ def parse_msg(msg):
         'throttle': throttle
     }
 
-def gui(msg):
+def animate(i):
     # Parse the message to get control values
-    values = parse_msg(msg)
+    values = parse_msg(current_msg)
     pitch = values['pitch']
     roll = values['roll']
     yaw = values['yaw']
     throttle = values['throttle']
 
-    # Create figure and two subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+    # Clear previous plots
+    ax1.clear()
+    ax2.clear()
 
     # Plot pitch vs roll
     ax1.plot([0, roll], [0, pitch], color='black')
@@ -43,5 +51,9 @@ def gui(msg):
     ax2.set_ylabel('throttle')
     ax2.set_title('Yaw vs Throttle')
 
+def gui(msg):
+    global current_msg
+    current_msg = msg
+    ani = animation.FuncAnimation(fig, animate, interval=500)
     plt.tight_layout()
     plt.show()
