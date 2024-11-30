@@ -14,7 +14,9 @@ def checksum(axes, hat):
     return (sum([v for v in axes.values()]) + hat) % 255
 
 
-def format_msg1(axes, hat):
+def format_msg1(values):
+    axes = format_axes(values)
+    hat = format_hat(values["hat"])
     chck = checksum(axes, hat).to_bytes(1, "big")
     pitch_b = axes["pitch"].to_bytes(2, "big")
     roll_b = axes["roll"].to_bytes(2, "big")

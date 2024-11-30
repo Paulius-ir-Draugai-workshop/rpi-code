@@ -1,5 +1,3 @@
-from time import sleep
-
 import dll
 import format
 import pygame
@@ -7,6 +5,7 @@ import read
 import serial
 
 ser = serial.Serial("/dev/ttyUSB0", 115200)
+
 
 # Initialize pygame
 pygame.init()
@@ -18,31 +17,33 @@ running = True
 throttle = None
 joystick = None
 
+sent = False
+
 while running:
-    time_delta = clock.tick(60) / 1000.0
+    clock.tick(10)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+    # checking connection, try to reconnect if disconnected
     if read.check_connection(throttle=throttle, joystick=joystick):
+        print("Controls disconnected")
         joystick, throttle = read.connect()
 
+    # read values, if no values are read, try to reconnect
     values = read.read(throttle=throttle, joystick=joystick)
     if not values:
         continue
 
-    f_axes = format.format_axes(values)
-    f_hat = format.format_hat(values["hat"])
-    print(f_axes, "hat:", f_hat, sep=" ")
-    print(format.checksum(f_axes, f_hat))
-    msg = format.format_msg1(f_axes, f_hat)
-    print("Msg: ", msg)
+    msg = format.format_msg1(values)
     dll_obj = dll.Dll()
     msg_u = dll_obj.dllPack(msg)
-    ser.write(msg_u)
-    msg_u = [int(b) for b in msg_u]
-    print("Dll: ", msg_u)
+    if not sent:
+        ser.write(msg_u)
+        sent = True
+
+    print("Dll: ", [int(b) for b in msg_u])
 
 # Quit pygame
 pygame.quit()
