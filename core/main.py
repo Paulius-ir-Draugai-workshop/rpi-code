@@ -4,6 +4,8 @@ import pygame
 import read
 import serial
 
+import gui
+
 ser = serial.Serial("/dev/ttyUSB0", 115200)
 
 
@@ -36,12 +38,18 @@ while running:
     if not values:
         continue
 
+    # formatting message to bytearray
     msg = format.format_msg1(values)
+
+    # draw gui
+    gui.parse_and_update_interface(msg)
+
+    # run message through dll
     dll_obj = dll.Dll()
     msg_u = dll_obj.dllPack(msg)
-    if not sent:
-        ser.write(msg_u)
-        sent = True
+
+    # send data serial
+    ser.write(msg_u)
 
     print("Dll: ", [int(b) for b in msg_u])
 
