@@ -1,65 +1,47 @@
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from matplotlib import style
 import numpy as np
 
-# Matplotlib Styling
-style.use('fivethirtyeight')
+def parse_msg(msg):
+    # Parse the byte message to extract pitch, roll, yaw, throttle
+    pitch = int.from_bytes(msg[1:3], 'big')
+    roll = int.from_bytes(msg[3:5], 'big')
+    yaw = int.from_bytes(msg[5:7], 'big')
+    throttle = int.from_bytes(msg[7:9], 'big')
+    return {
+        'pitch': pitch,
+        'roll': roll,
+        'yaw': yaw,
+        'throttle': throttle
+    }
 
-# Create Figure and Axes for the Graphs
-fig, (ax1, ax2) = plt.subplots(2, 1)
+def gui(msg):
+    # Parse the message to get control values
+    values = parse_msg(msg)
+    pitch = values['pitch']
+    roll = values['roll']
+    yaw = values['yaw']
+    throttle = values['throttle']
 
-# Placeholder data for the graphs
-x_data = []
-y_pitch = []
-y_roll = []
-y_yaw = []
-y_throttle = []
+    # Create figure and two subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
-def animate(i, msg):
-    # Extract values for graphing from the message
-    pitch = msg['pitch']
-    roll = msg['roll']
-    yaw = msg['yaw']
-    throttle = msg['throttle']
+    # Plot pitch vs roll
+    ax1.plot([0, roll], [0, pitch], color='black')
+    ax1.scatter([roll], [pitch], color='red')
+    ax1.set_xlim(-1500, 1500)
+    ax1.set_ylim(-1500, 1500)
+    ax1.set_xlabel('roll')
+    ax1.set_ylabel('pitch')
+    ax1.set_title('Pitch vs Roll')
 
-    # Update data lists
-    x_data.append(len(x_data))
-    y_pitch.append(pitch)
-    y_roll.append(roll)
-    y_yaw.append(yaw)
-    y_throttle.append(throttle)
+    # Plot yaw vs throttle
+    ax2.plot([0, yaw], [0, throttle], color='black')
+    ax2.scatter([yaw], [throttle], color='red')
+    ax2.set_xlim(-1500, 1500)
+    ax2.set_ylim(-1500, 1500)
+    ax2.set_xlabel('yaw')
+    ax2.set_ylabel('throttle')
+    ax2.set_title('Yaw vs Throttle')
 
-    # Limit lists to the last 20 points
-    x_data_trimmed = x_data[-20:]
-    y_pitch_trimmed = y_pitch[-20:]
-    y_roll_trimmed = y_roll[-20:]
-    y_yaw_trimmed = y_yaw[-20:]
-    y_throttle_trimmed = y_throttle[-20:]
-
-    # Clear and plot on ax1 (Pitch vs Roll)
-    ax1.clear()
-    ax1.plot(x_data_trimmed, y_pitch_trimmed, label='Pitch')
-    ax1.plot(x_data_trimmed, y_roll_trimmed, label='Roll', color='orange')
-    ax1.set_title('Pitch vs Roll over Time')
-    ax1.set_ylabel('Value')
-    ax1.legend()
-
-    # Clear and plot on ax2 (Yaw vs Throttle)
-    ax2.clear()
-    ax2.plot(x_data_trimmed, y_yaw_trimmed, label='Yaw', color='green')
-    ax2.plot(x_data_trimmed, y_throttle_trimmed, label='Throttle', color='red')
-    ax2.set_title('Yaw vs Throttle over Time')
-    ax2.set_ylabel('Value')
-    ax2.set_xlabel('Time')
-    ax2.legend()
-
-# Example function to draw graphs with given message
-def draw_graphs(msg):
-    ani = animation.FuncAnimation(fig, animate, fargs=(msg,), interval=100, repeat=False)
     plt.tight_layout()
     plt.show()
-
-# Example usage
-msg = {'pitch': 0.5, 'roll': 0.3, 'yaw': 0.1, 'throttle': 0.7}
-draw_graphs(msg)
