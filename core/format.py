@@ -9,6 +9,7 @@ MSG1_ID = 0b10101010
 # 000010 : 2
 # 000011 : 3
 
+
 def checksum(axes, hat):
     return (sum([v for v in axes.values()]) + hat) % 255
 
@@ -27,7 +28,7 @@ def format_msg1(axes, hat):
     msg_b.extend(throttle_b)
     msg_b.extend(hat_b)
     msg_b.extend(chck)
-    return msg_b
+    return bytearray(msg_b)
 
 
 def format_axes(axes):
@@ -46,6 +47,4 @@ def format_hat(hat):
 
 
 if __name__ == "__main__":
-    axes = {
-        "pitch"
-    }
+    ...
