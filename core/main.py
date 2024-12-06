@@ -1,3 +1,7 @@
+import syslog
+
+syslog.syslog("Before start")
+
 import dll
 import format
 import pygame
@@ -7,7 +11,7 @@ import transmit
 # Initialize pygame
 pygame.init()
 
-
+syslog.syslog("Started rpi")
 # Main loop
 clock = pygame.time.Clock()
 running = True
@@ -19,6 +23,7 @@ joystick = None
 antenna = transmit.connect_antenna()
 
 while running:
+    syslog.syslog("Looping")
     clock.tick(5)
 
     for event in pygame.event.get():
