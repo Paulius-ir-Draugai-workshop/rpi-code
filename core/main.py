@@ -2,14 +2,11 @@ import dll
 import format
 import pygame
 import read
-import serial
-
-import gui
-
-ser = serial.Serial("/dev/ttyUSB0", 115200)
+import transmit
 
 # Initialize pygame
 pygame.init()
+
 
 # Main loop
 clock = pygame.time.Clock()
@@ -18,10 +15,11 @@ running = True
 throttle = None
 joystick = None
 
-sent = False
+# connect antenna
+antenna = transmit.connect_antenna()
 
 while running:
-    clock.tick(10)
+    clock.tick(5)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -41,15 +39,15 @@ while running:
     msg = format.format_msg1(values)
 
     # draw gui
-    gui.parse_and_update_interface(msg)
+    # gui.parse_and_update_interface(msg)
 
     # run message through dll
     dll_obj = dll.Dll()
     msg_u = dll_obj.dllPack(msg)
 
-    # send data serial
-    ser.write(msg_u)
-
+    if not transmit.write(b"lopai", antenna):
+        print("nshui")
+        antenna = transmit.connect_antenna()
     print("Dll: ", [int(b) for b in msg_u])
 
 # Quit pygame
