@@ -45,8 +45,7 @@ while running:
     dll_obj = dll.Dll()
     msg_u = dll_obj.dllPack(msg)
 
-    if not transmit.write(b"lopai", antenna):
-        print("nshui")
+    if not transmit.write(b"test", antenna):
         antenna = transmit.connect_antenna()
     print("Dll: ", [int(b) for b in msg_u])
 
