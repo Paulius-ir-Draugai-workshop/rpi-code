@@ -8,7 +8,6 @@ import gui
 
 ser = serial.Serial("/dev/ttyUSB0", 115200)
 
-
 # Initialize pygame
 pygame.init()
 
