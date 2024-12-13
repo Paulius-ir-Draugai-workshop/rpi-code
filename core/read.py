@@ -1,3 +1,4 @@
+import syslog
 from time import sleep
 
 import pygame
@@ -36,9 +37,11 @@ def connect():
                 joystick = pygame.joystick.Joystick(0)
             else:
                 print("Joysticks not supported.")
+                syslog.syslog("Joysticks not supported.")
                 return (None, None)
         sleep(0.05)
     print("Throttle and Joystick connected!")
+    syslog.syslog("Throttle and Joystick connected!")
     return (joystick, throttle)
 
 

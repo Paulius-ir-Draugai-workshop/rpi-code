@@ -1,7 +1,5 @@
 import syslog
 
-syslog.syslog("Before start")
-
 import dll
 import format
 import pygame
@@ -23,7 +21,6 @@ joystick = None
 antenna = transmit.connect_antenna()
 
 while running:
-    syslog.syslog("Looping")
     clock.tick(5)
 
     for event in pygame.event.get():
@@ -33,6 +30,7 @@ while running:
     # checking connection, try to reconnect if disconnected
     if read.check_connection(throttle=throttle, joystick=joystick):
         print("Controls disconnected")
+        syslog.syslog("Controls disconnected")
         joystick, throttle = read.connect()
 
     # read values, if no values are read, try to reconnect
@@ -50,9 +48,10 @@ while running:
     dll_obj = dll.Dll()
     msg_u = dll_obj.dllPack(msg)
 
-    if not transmit.write(b"test", antenna):
+    if not transmit.write(msg_u, antenna):
         antenna = transmit.connect_antenna()
     print("Dll: ", [int(b) for b in msg_u])
+    syslog.syslog(f"Dll: {[int(b) for b in msg_u]}")
 
 # Quit pygame
 pygame.quit()
